@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="shonagon.js" type="module"></script>
+    <script src="escodegen.js"></script>
+    <style type="text/css" media="screen">
+        #editor {
+            width: 600px;
+            height: 300px;
+        }
+
+        #editor2 {
+            width: 600px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div id="editor">let i = 3;
+i = i + 1;
+for (let i = 5; i < 7; i = i + 2){
+    console.log(i);
+    i = -1 + i
+    i = i % 5;
+    i += 1;
+    i = 3 / i;
+}
+</div>
+<button id="convert">Convert</button>
+
+<div id="editor2"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13/ace.min.js" type="text/javascript"
+        charset="utf-8"></script>
+<script type="module">
+    import {Transpile} from "./shonagon.js";
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/javascript");
+
+    var editor2 = ace.edit("editor2");
+    editor2.setTheme("ace/theme/twilight");
+    editor2.session.setMode("ace/mode/javascript");
+    editor2.setReadOnly(true);
+
+    document.getElementById('convert').onclick = () => {
+        let code = editor.getValue()
+
+
+        let newCode = (new Transpile).ConvertAllCode(code);
+
+        editor2.setValue(newCode)
+    }
+</script>
+</body>
+</html>
