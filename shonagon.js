@@ -142,50 +142,79 @@ function ConvertAllToNode(code) {
 function RunAssertions(assertions, node_) {
     let failure = []
     const nodes = new NodeWalker().walkNode(node_)
+    console.log(nodes)
     nodes.forEach(node => {
         assertions.assertions.forEach(assertion => {
-            assertion.must.assert.some((a, i) => {
-                if (CheckAssertionSame(a, node)) {
-                    assertion.must.assert.splice(i, 1)
-                    return true
-                }
-            })
-            assertion.oneOf.assert.some((a, i) => {
-                if (CheckAssertionSame(a, node)) {
-                    assertion.oneOf.assert = []
-                    return true
-                }
-            })
-            assertion.deny.assert.some((a, i) => {
-                if (CheckAssertionSame(a, node)) {
-                    failure.push(assertion.deny)
-                    assertion.deny.assert = []
-                    assertion.oneOf.assert = []
-                    assertion.must.assert = []
-                    return true
-                }
-            })
+            RecursiveCompare(assertion, node)
         })
     })
     assertions.assertions.forEach(assertion => {
-        if (assertion.must.assert.length > 0) {
-            failure.push(assertion.must)
-        }
-        if (assertion.oneOf.assert.length > 0) {
-            failure.push(assertion.oneOf)
+        RecursiveDetermine(assertion)
+        if (assertion.matched === false || (!assertion.hasOwnProperty('none') && !assertion.matched)) {
+            failure.push(assertion)
         }
     })
 
     return failure
 }
 
+function RecursiveCompare(assertion, node) {
+    if (assertion.matched !== undefined) return assertion.matched
+    let [none, oneOf, all, is_container] = [false, false, false, false]
+
+    if (assertion.hasOwnProperty('none')) {
+        is_container = true
+        none = assertion.none.some(a => RecursiveCompare(a, node))
+    } else if (assertion.hasOwnProperty('oneOf')) {
+        is_container = true
+        oneOf = assertion.oneOf.some(a => RecursiveCompare(a, node))
+    } else if (assertion.hasOwnProperty('all')) {
+        is_container = true
+        assertion.all.forEach(a => RecursiveCompare(a, node))
+        all = assertion.all.every(a => a.matched)
+    }
+
+    if (is_container) {
+        if (none) assertion.matched = false
+        else if (oneOf) assertion.matched = true
+        else if (all) assertion.matched = true
+    } else if (CheckAssertionSame(assertion, node)) {
+        assertion.matched = true
+    }
+
+    return assertion.matched
+}
+
+function RecursiveDetermine(assertion) {
+    if (assertion.hasOwnProperty('none')) {
+        assertion.none.forEach(a => RecursiveDetermine(a))
+        assertion.matched = !assertion.none.some(a => a.matched)
+    } else if (assertion.hasOwnProperty('oneOf')) {
+        assertion.oneOf.some(a => RecursiveDetermine(a))
+        assertion.matched = assertion.oneOf.some(a => a.matched)
+    } else if (assertion.hasOwnProperty('all')) {
+        assertion.all.forEach(a => RecursiveDetermine(a))
+        assertion.matched = assertion.all.every(a => a.matched)
+    }
+
+    if (!assertion.matched) assertion.matched = false
+}
+
 function CheckAssertionSame(assertion, node) {
     if (typeof node !== 'object' || node === null) return false
     for (const [key, val] of Object.entries(assertion)) {
-        if (['Number','String','Boolean', 'Symbol'].includes(val.constructor.name)) {
+        if (val === null) {
+            if (node[key] !== null) return false
+        } else if (['Number', 'String', 'Boolean', 'Symbol'].includes(val.constructor.name)) {
             if (assertion[key] !== node[key]) return false
         } else if (val.hasOwnProperty('allow')) {
             if (val.allow.indexOf(node[key]) === -1) return false
+        } else if (Array.isArray(val)) {
+            if (!Array.isArray(node[key])) return false
+            if (val.length !== node[key].length) return false
+            for (let i = 0; i < val.length; i++) {
+                if (!CheckAssertionSame(val[i], node[key][i])) return false
+            }
         } else if (typeof val === 'object') {
             let target = node[key]
             if (Array.isArray(target)) {
@@ -204,7 +233,8 @@ class NodeWalker {
     }
 
     walkNode(node) {
-        if (!Array.isArray(node) && typeof node === 'object' && node !== null) {
+        if (node === undefined || node === null) return
+        if (!Array.isArray(node) && typeof node === 'object') {
             this.queue.push(node)
         }
         for (const [_, val] of Object.entries(node)) {
@@ -213,7 +243,7 @@ class NodeWalker {
                     this.walkNode(el)
                 })
             } else if (typeof val === 'object') {
-                this.queue.push(val)
+                this.walkNode(val)
             }
         }
         return this.queue

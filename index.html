@@ -18,10 +18,11 @@
     </style>
 </head>
 <body>
-<div id="editor">let a = 100
-    console.log(a)
-    a = 50
-    console.log(a)
+<div id="editor">
+    function oddEven(val){
+    if (val % 2) return "odd"
+    return 'even'
+    }
 </div>
 <button id="convert">Convert</button>
 <textarea id="assertions">
@@ -35,134 +36,125 @@
 
     document.getElementById('assertions').value = JSON.stringify(
         {
-            assertions: [
-                {
-                    oneOf: {
-                        assert: []
+            assertions:
+                [
+                    {
+                        onerror: '正しく関数が宣言されていません',
+                        all: [{
+                            type: 'FunctionDeclaration',
+                        }]
                     },
-                    must: {
-                        onerror: 'aが正しく宣言されていません',
-                        assert: [
+                    {
+                        onerror: '関数の引数が正しく設定されていません',
+                        all: [{
+                            type: 'FunctionDeclaration',
+                            params: [
+                                {type: 'Identifier'},
+                            ]
+                        }]
+                    },
+                    {
+                        onerror: '条件分岐が行われていません',
+                        all: [
                             {
-                                type: 'VariableDeclaration',
-                                kind: {
-                                    allow: ['let', 'var']
-                                }
+                                type: 'IfStatement'
                             }
                         ]
                     },
-                    deny: {
-                        onerror: 'constで宣言された値は再代入不可能です',
-                        assert: [
+                    {
+                        onerror: '判定条件に%が用いられていません',
+                        all: [
                             {
-                                type: 'VariableDeclaration',
-                                kind: {
-                                    allow: ['const']
-                                }
+                                type: 'BinaryExpression',
+                                operator: '%'
                             }
                         ]
-                    }
-                },
-                {
-                    oneOf: {
-                        onerror: 'aの値が正しく代入されていません',
-                        assert: [
+                    },
+                    {
+                        onerror: '正しい文字列が使われていません',
+                        all: [
                             {
-                                type: 'VariableDeclarator',
-                                id: {
-                                    type: 'Identifier',
-                                    name: 'a'
-                                },
-                                init: {
-                                    type: 'Literal',
-                                    value: 100
-                                }
+                                type: 'Literal',
+                                value: 'even'
                             },
                             {
-                                type: 'AssignmentExpression',
-                                left: {
-                                    type: 'Identifier',
-                                    name: 'a'
-                                },
-                                operator: '=',
-                                right: {
-                                    type: 'Literal',
-                                    value: 100
-                                }
-                            },
+                                type: 'Literal',
+                                value: 'odd'
+                            }
                         ]
                     },
-                    must: {
-                        onerror: 'aの値が正しく代入されていません',
-                        assert: [
+                    {
+                        onerror: '判定条件の値が誤っています',
+                        all: [
                             {
-                                type: 'AssignmentExpression',
-                                left: {
-                                    type: 'Identifier',
-                                    name: 'a'
-                                },
-                                operator: '=',
-                                right: {
-                                    type: 'Literal',
-                                    value: 50
-                                }
+                                none: [{
+                                    all: [
+                                        {
+                                            type: 'BinaryExpression',
+                                            operator: '%',
+                                            left: {
+                                                type: 'Identifier'
+                                            },
+                                            right: {
+                                                type: 'Literal',
+                                                value: 2
+                                            }
+                                        },
+                                        {
+                                            none: [
+                                                {
+                                                    type: 'BinaryExpression',
+                                                    operator: '%'
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }]
                             },
-                        ]
-                    },
-                    deny: {
-                        assert: []
-                    }
-                },
-                {
-                    oneOf: {
-                        assert: []
-                    },
-                    must: {
-                        onerror: '正しく2回出力されていません',
-                        assert: [
                             {
-                                type: 'CallExpression',
-                                callee: {
-                                    type: 'MemberExpression',
-                                    object: {
-                                        type: 'Identifier',
-                                        name: 'console'
+                                oneOf: [
+                                    {
+                                        type: 'BinaryExpression',
+                                        operator: '%',
+                                        left: {
+                                            type: 'Identifier'
+                                        },
+                                        right: {
+                                            type: 'Literal',
+                                            value: 2
+                                        }
                                     },
-                                    property: {
-                                        type: 'Identifier',
-                                        name: 'log'
+                                    {
+                                        none: [
+                                            {
+                                                type: 'BinaryExpression',
+                                                operator: '%'
+                                            }
+                                        ]
                                     }
-                                },
-                                arguments: {
-                                    type: 'Identifier',
-                                    name: 'a'
-                                }
-                            },
+                                ]
+                            }
+                        ]
+
+                    },
+                    {
+                        onerror: '関数内でreturn文が使われていません',
+                        all: [
                             {
-                                type: 'CallExpression',
-                                callee: {
-                                    type: 'MemberExpression',
-                                    object: {
-                                        type: 'Identifier',
-                                        name: 'console'
-                                    },
-                                    property: {
-                                        type: 'Identifier',
-                                        name: 'log'
-                                    }
-                                },
-                                arguments: {
-                                    type: 'Identifier',
-                                    name: 'a'
-                                }
+                                type: 'ReturnStatement'
                             }
                         ]
                     },
-                    deny: {
-                        assert: []
-                    }
-                }
-            ]
+                    {
+                        onerror: '関数から値が返却されていません',
+                        none: [
+                            {
+                                type: 'ReturnStatement',
+                                argument: null
+                            }
+                        ]
+                    },
+                ]
         }
     )
 
@@ -187,7 +179,7 @@
 
         console.log(fail)
         if (fail.length) {
-            result.innerText = fail.map(j=>j.onerror).join('\n')
+            result.innerText = fail.map(j => j.onerror).join('\n')
         } else {
             result.innerText = 'success'
         }
