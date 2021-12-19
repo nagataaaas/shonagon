@@ -145,12 +145,12 @@ function RunAssertions(assertions, node_) {
     console.log(nodes)
     nodes.forEach(node => {
         assertions.assertions.forEach(assertion => {
-            RecursiveCompare(assertion, node)
+            RecursiveCompare(assertion.assertion, node)
         })
     })
     assertions.assertions.forEach(assertion => {
-        RecursiveDetermine(assertion)
-        if (assertion.matched === false || (!assertion.hasOwnProperty('none') && !assertion.matched)) {
+        RecursiveDetermine(assertion.assertion)
+        if (assertion.assertion.matched === false || (!assertion.assertion.hasOwnProperty('none') && !assertion.assertion.matched)) {
             failure.push(assertion)
         }
     })

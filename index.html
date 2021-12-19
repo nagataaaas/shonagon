@@ -37,41 +37,50 @@
     document.getElementById('assertions').value = JSON.stringify(
         {
             assertions:
-                [
-                    {
-                        onerror: '正しく関数が宣言されていません',
+            [
+                {
+                    onerror: '正しく関数が宣言されていません',
+                    assertion: {
                         all: [{
                             type: 'FunctionDeclaration',
                         }]
-                    },
-                    {
-                        onerror: '関数の引数が正しく設定されていません',
+                    }
+                },
+                {
+                    onerror: '関数の引数が正しく設定されていません',
+                    assertion: {
                         all: [{
                             type: 'FunctionDeclaration',
                             params: [
                                 {type: 'Identifier'},
                             ]
                         }]
-                    },
-                    {
-                        onerror: '条件分岐が行われていません',
+                    }
+                },
+                {
+                    onerror: '条件分岐が行われていません',
+                    assertion: {
                         all: [
                             {
                                 type: 'IfStatement'
                             }
                         ]
-                    },
-                    {
-                        onerror: '判定条件に%が用いられていません',
+                    }
+                },
+                {
+                    onerror: '判定条件に%が用いられていません',
+                    assertion: {
                         all: [
                             {
                                 type: 'BinaryExpression',
                                 operator: '%'
                             }
                         ]
-                    },
-                    {
-                        onerror: '正しい文字列が使われていません',
+                    }
+                },
+                {
+                    onerror: '正しい文字列が使われていません',
+                    assertion: {
                         all: [
                             {
                                 type: 'Literal',
@@ -82,9 +91,11 @@
                                 value: 'odd'
                             }
                         ]
-                    },
-                    {
-                        onerror: '判定条件の値が誤っています',
+                    }
+                },
+                {
+                    onerror: '判定条件の値が誤っています',
+                    assertion: {
                         all: [
                             {
                                 none: [{
@@ -135,26 +146,31 @@
                                 ]
                             }
                         ]
+                    }
 
-                    },
-                    {
-                        onerror: '関数内でreturn文が使われていません',
+                },
+                {
+                    onerror: '関数内でreturn文が使われていません',
+                    assertion: {
                         all: [
                             {
                                 type: 'ReturnStatement'
                             }
                         ]
-                    },
-                    {
-                        onerror: '関数から値が返却されていません',
+                    }
+                },
+                {
+                    onerror: '関数から値が返却されていません',
+                    assertion: {
                         none: [
                             {
                                 type: 'ReturnStatement',
                                 argument: null
                             }
                         ]
-                    },
-                ]
+                    }
+                },
+            ]
         }
     )
 
@@ -179,7 +195,7 @@
 
         console.log(fail)
         if (fail.length) {
-            result.innerText = fail.map(j => j.onerror).join('\n')
+            result.innerText = fail.map(j => j.message).join('\n')
         } else {
             result.innerText = 'success'
         }
