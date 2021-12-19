@@ -18,23 +18,155 @@
     </style>
 </head>
 <body>
-<div id="editor">let i = 3;
-i = i + 1;
-for (let i = 5; i < 7; i = i + 2){
-    console.log(i);
-    i = -1 + i
-    i = i % 5;
-    i += 1;
-    i = 3 / i;
-}
+<div id="editor">let a = 100
+    console.log(a)
+    a = 50
+    console.log(a)
 </div>
 <button id="convert">Convert</button>
+<textarea id="assertions">
+</textarea>
+<div id="result"></div>
 
 <div id="editor2"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13/ace.min.js" type="text/javascript"
         charset="utf-8"></script>
 <script type="module">
-    import {Transpile} from "./shonagon.js";
+
+    document.getElementById('assertions').value = JSON.stringify(
+        {
+            assertions: [
+                {
+                    oneOf: {
+                        assert: []
+                    },
+                    must: {
+                        onerror: 'aが正しく宣言されていません',
+                        assert: [
+                            {
+                                type: 'VariableDeclaration',
+                                kind: {
+                                    allow: ['let', 'var']
+                                }
+                            }
+                        ]
+                    },
+                    deny: {
+                        onerror: 'constで宣言された値は再代入不可能です',
+                        assert: [
+                            {
+                                type: 'VariableDeclaration',
+                                kind: {
+                                    allow: ['const']
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    oneOf: {
+                        onerror: 'aの値が正しく代入されていません',
+                        assert: [
+                            {
+                                type: 'VariableDeclarator',
+                                id: {
+                                    type: 'Identifier',
+                                    name: 'a'
+                                },
+                                init: {
+                                    type: 'Literal',
+                                    value: 100
+                                }
+                            },
+                            {
+                                type: 'AssignmentExpression',
+                                left: {
+                                    type: 'Identifier',
+                                    name: 'a'
+                                },
+                                operator: '=',
+                                right: {
+                                    type: 'Literal',
+                                    value: 100
+                                }
+                            },
+                        ]
+                    },
+                    must: {
+                        onerror: 'aの値が正しく代入されていません',
+                        assert: [
+                            {
+                                type: 'AssignmentExpression',
+                                left: {
+                                    type: 'Identifier',
+                                    name: 'a'
+                                },
+                                operator: '=',
+                                right: {
+                                    type: 'Literal',
+                                    value: 50
+                                }
+                            },
+                        ]
+                    },
+                    deny: {
+                        assert: []
+                    }
+                },
+                {
+                    oneOf: {
+                        assert: []
+                    },
+                    must: {
+                        onerror: '正しく2回出力されていません',
+                        assert: [
+                            {
+                                type: 'CallExpression',
+                                callee: {
+                                    type: 'MemberExpression',
+                                    object: {
+                                        type: 'Identifier',
+                                        name: 'console'
+                                    },
+                                    property: {
+                                        type: 'Identifier',
+                                        name: 'log'
+                                    }
+                                },
+                                arguments: {
+                                    type: 'Identifier',
+                                    name: 'a'
+                                }
+                            },
+                            {
+                                type: 'CallExpression',
+                                callee: {
+                                    type: 'MemberExpression',
+                                    object: {
+                                        type: 'Identifier',
+                                        name: 'console'
+                                    },
+                                    property: {
+                                        type: 'Identifier',
+                                        name: 'log'
+                                    }
+                                },
+                                arguments: {
+                                    type: 'Identifier',
+                                    name: 'a'
+                                }
+                            }
+                        ]
+                    },
+                    deny: {
+                        assert: []
+                    }
+                }
+            ]
+        }
+    )
+
+    import {ConvertAllCode, ConvertAllToNode, RunAssertions} from "./shonagon.js";
 
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
@@ -47,9 +179,18 @@ for (let i = 5; i < 7; i = i + 2){
 
     document.getElementById('convert').onclick = () => {
         let code = editor.getValue()
+        const result = document.getElementById('result')
 
 
-        let newCode = (new Transpile).ConvertAllCode(code);
+        let newCode = ConvertAllCode(code);
+        const fail = RunAssertions(JSON.parse(document.getElementById('assertions').value), ConvertAllToNode(code))
+
+        console.log(fail)
+        if (fail.length) {
+            result.innerText = fail.map(j=>j.onerror).join('\n')
+        } else {
+            result.innerText = 'success'
+        }
 
         editor2.setValue(newCode)
     }
