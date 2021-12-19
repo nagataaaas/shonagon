@@ -39,7 +39,7 @@
             assertions:
             [
                 {
-                    onerror: '正しく関数が宣言されていません',
+                    message: '正しく関数が宣言されていません',
                     assertion: {
                         all: [{
                             type: 'FunctionDeclaration',
@@ -47,7 +47,7 @@
                     }
                 },
                 {
-                    onerror: '関数の引数が正しく設定されていません',
+                    message: '関数の引数が正しく設定されていません',
                     assertion: {
                         all: [{
                             type: 'FunctionDeclaration',
@@ -58,7 +58,7 @@
                     }
                 },
                 {
-                    onerror: '条件分岐が行われていません',
+                    message: '条件分岐が行われていません',
                     assertion: {
                         all: [
                             {
@@ -68,7 +68,7 @@
                     }
                 },
                 {
-                    onerror: '判定条件に%が用いられていません',
+                    message: '判定条件に%が用いられていません',
                     assertion: {
                         all: [
                             {
@@ -79,7 +79,7 @@
                     }
                 },
                 {
-                    onerror: '正しい文字列が使われていません',
+                    message: '正しい文字列が使われていません',
                     assertion: {
                         all: [
                             {
@@ -94,7 +94,7 @@
                     }
                 },
                 {
-                    onerror: '判定条件の値が誤っています',
+                    message: '判定条件の値が誤っています',
                     assertion: {
                         all: [
                             {
@@ -150,7 +150,7 @@
 
                 },
                 {
-                    onerror: '関数内でreturn文が使われていません',
+                    message: '関数内でreturn文が使われていません',
                     assertion: {
                         all: [
                             {
@@ -160,7 +160,7 @@
                     }
                 },
                 {
-                    onerror: '関数から値が返却されていません',
+                    message: '関数から値が返却されていません',
                     assertion: {
                         none: [
                             {

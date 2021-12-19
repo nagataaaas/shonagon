@@ -4,50 +4,60 @@ json =
         assertions:
             [
                 {
-                    onerror: '正しく関数が宣言されていません',
-                    all: [{
-                        type: 'FunctionDeclaration',
-                    }]
+                    message: '正しく関数が宣言されていません',
+                    assertion: {
+                        all: [{
+                            type: 'FunctionDeclaration',
+                        }]
+                    }
                 },
                 {
-                    onerror: '関数の引数が正しく設定されていません',
-                    all: [{
-                        type: 'FunctionDeclaration',
-                        params: [
-                            {type: 'Identifier'},
-                            {type: 'Identifier'},
+                    message: '関数の引数が正しく設定されていません',
+                    assertion: {
+                        all: [{
+                            type: 'FunctionDeclaration',
+                            params: [
+                                {type: 'Identifier'},
+                                {type: 'Identifier'},
+                            ]
+                        }]
+                    }
+                },
+                {
+                    message: '足し算が行われていません',
+                    assertion: {
+                        oneOf: [
+                            {
+                                type: 'BinaryExpression',
+                                operator: '+',
+                            },
+                            {
+                                type: 'AssignmentExpression',
+                                operator: '+='
+                            },
                         ]
-                    }]
+                    }
                 },
                 {
-                    onerror: '足し算が行われていません',
-                    oneOf: [
-                        {
-                            type: 'BinaryExpression',
-                            operator: '+',
-                        },
-                        {
-                            type: 'AssignmentExpression',
-                            operator: '+='
-                        },
-                    ]
+                    message: '関数内でreturn文が使われていません',
+                    assertion: {
+                        all: [
+                            {
+                                type: 'ReturnStatement'
+                            }
+                        ]
+                    }
                 },
                 {
-                    onerror: '関数内でreturn文が使われていません',
-                    all: [
-                        {
-                            type: 'ReturnStatement'
-                        }
-                    ]
-                },
-                {
-                    onerror: '関数から値が返却されていません',
-                    none: [
-                        {
-                            type: 'ReturnStatement',
-                            argument: null
-                        }
-                    ]
+                    message: '関数から値が返却されていません',
+                    assertion: {
+                        none: [
+                            {
+                                type: 'ReturnStatement',
+                                argument: null
+                            }
+                        ]
+                    }
                 },
             ]
     }

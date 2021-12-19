@@ -4,91 +4,99 @@ json =
         assertions:
             [
                 {
-                    onerror: 'aが正しく宣言されていません',
-                    all: [{
-                        type: 'VariableDeclaration',
-                        kind: {
-                            allow: ['let', 'var', 'const']
-                        }
-                    }]
-                },
-                {
-                    onerror: 'constで宣言された値は再代入不可能です',
-                    none: [
-                        {
+                    message: 'aが正しく宣言されていません',
+                    assertion: {
+                        all: [{
                             type: 'VariableDeclaration',
                             kind: {
-                                allow: ['const']
+                                allow: ['let', 'var', 'const']
                             }
-                        }
-                    ]
+                        }]
+                    }
                 },
                 {
-                    onerror: 'aの値が正しく代入されていません',
-                    all: [{
-                        oneOf: [
+                    message: 'constで宣言された値は再代入不可能です',
+                    assertion: {
+                        none: [
                             {
-                                type: 'VariableDeclarator',
-                                id: {
-                                    type: 'Identifier',
-                                    name: 'a'
-                                },
-                                init: {
-                                    type: 'Literal',
-                                    value: 100
+                                type: 'VariableDeclaration',
+                                kind: {
+                                    allow: ['const']
                                 }
-                            },
-                            {
-                                type: 'AssignmentExpression',
-                                left: {
-                                    type: 'Identifier',
-                                    name: 'a'
+                            }
+                        ]
+                    }
+                },
+                {
+                    message: 'aの値が正しく代入されていません',
+                    assertion: {
+                        all: [{
+                            oneOf: [
+                                {
+                                    type: 'VariableDeclarator',
+                                    id: {
+                                        type: 'Identifier',
+                                        name: 'a'
+                                    },
+                                    init: {
+                                        type: 'Literal',
+                                        value: 100
+                                    }
                                 },
-                                operator: '=',
-                                right: {
-                                    type: 'Literal',
-                                    value: 100
-                                }
-                            },
-                        ],
+                                {
+                                    type: 'AssignmentExpression',
+                                    left: {
+                                        type: 'Identifier',
+                                        name: 'a'
+                                    },
+                                    operator: '=',
+                                    right: {
+                                        type: 'Literal',
+                                        value: 100
+                                    }
+                                },
+                            ],
+                            all: [
+                                {
+                                    type: 'AssignmentExpression',
+                                    left: {
+                                        type: 'Identifier',
+                                        name: 'a'
+                                    },
+                                    operator: '=',
+                                    right: {
+                                        type: 'Literal',
+                                        value: 50
+                                    }
+                                },
+                            ]
+                        }]
+                    }
+                },
+                {
+                    message: '正しく出力されていません',
+                    assertion: {
                         all: [
                             {
-                                type: 'AssignmentExpression',
-                                left: {
+                                type: 'CallExpression',
+                                callee: {
+                                    type: 'MemberExpression',
+                                    object: {
+                                        type: 'Identifier',
+                                        name: 'console'
+                                    },
+                                    property: {
+                                        type: 'Identifier',
+                                        name: 'log'
+                                    }
+                                },
+                                arguments: {
                                     type: 'Identifier',
                                     name: 'a'
-                                },
-                                operator: '=',
-                                right: {
-                                    type: 'Literal',
-                                    value: 50
                                 }
-                            },
-                        ]
-                    }]
-                },
-                {
-                    onerror: '正しく出力されていません',
-                    all: [
-                        {
-                            type: 'CallExpression',
-                            callee: {
-                                type: 'MemberExpression',
-                                object: {
-                                    type: 'Identifier',
-                                    name: 'console'
-                                },
-                                property: {
-                                    type: 'Identifier',
-                                    name: 'log'
-                                }
-                            },
-                            arguments: {
-                                type: 'Identifier',
-                                name: 'a'
                             }
-                        }
-                    ]
+                        ]
+                    }
                 }
             ]
     }
