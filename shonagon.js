@@ -137,4 +137,8 @@ export class Transpile {
         let newNode = (new Transpile).convertAll(Parser.parse(code, {ranges: false}));
         return escodegen.generate(newNode)
     }
+
+    ConvertAllToNode(code){
+        return (new Transpile).convertAll(Parser.parse(code, {ranges: false}));
+    }
 }
