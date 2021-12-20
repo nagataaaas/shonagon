@@ -1,6 +1,8 @@
 json =
     {
-        quiz: '二つの引数を受け取り足し算を行う関数を宣言せよ。',
+        title: '足し算を行う関数',
+        description: '二つの引数を受け取り足し算を行う関数を宣言せよ。',
+        tags: ['関数定義', '算術理解'],
         assertions:
             [
                 {
@@ -9,7 +11,8 @@ json =
                         all: [{
                             type: 'FunctionDeclaration',
                         }]
-                    }
+                    },
+                    tags: ['関数定義']
                 },
                 {
                     message: '関数の引数が正しく設定されていません',
@@ -21,7 +24,8 @@ json =
                                 {type: 'Identifier'},
                             ]
                         }]
-                    }
+                    },
+                    tags: ['関数定義']
                 },
                 {
                     message: '足し算が行われていません',
@@ -36,7 +40,8 @@ json =
                                 operator: '+='
                             },
                         ]
-                    }
+                    },
+                    tags: ['算術理解']
                 },
                 {
                     message: '関数内でreturn文が使われていません',
@@ -46,7 +51,8 @@ json =
                                 type: 'ReturnStatement'
                             }
                         ]
-                    }
+                    },
+                    tags: ['関数定義', '関数からの値の返却']
                 },
                 {
                     message: '関数から値が返却されていません',
@@ -57,7 +63,8 @@ json =
                                 argument: null
                             }
                         ]
-                    }
+                    },
+                    tags: ['関数定義', '関数からの値の返却']
                 },
             ]
     }
