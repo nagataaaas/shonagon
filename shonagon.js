@@ -143,7 +143,7 @@ function ConvertAllToNode(code) {
 function RunAssertions(assertions, node_) {
     let failure = []
     assertions.assertions.forEach(assertion => {
-        assertion.assertions = JSON.parse(assertion.assertions)
+        assertion.assertion = JSON.parse(assertion.assertion)
     })
     const nodes = new NodeWalker().walkNode(node_)
     nodes.forEach(node => {
