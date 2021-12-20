@@ -58,12 +58,13 @@ function selfAssignToUpdateAndInplace(node) {
         }
     } else if (right.operator === '-') {
         if (isSameValue(left, right.left)) {
-            if (right.right.type === 'Literal' && right.right.value === 1) {
+            let another = right.right
+            if (another.type === 'Literal' && another.value === 1) {
                 return {type: 'UpdateExpression', start: 0, end: 0, argument: left, operator: '--', prefix: false}
             } else if (another.type === 'UnaryExpression' && another.operator === '-' && another.argument.value === 1) {
                 return {type: 'UpdateExpression', start: 0, end: 0, argument: left, operator: '++', prefix: false}
             }
-            return {type: 'AssignmentExpression', start: 0, end: 0, left: left, operator: '-=', right: right.right}
+            return {type: 'AssignmentExpression', start: 0, end: 0, left: left, operator: '-=', right: another}
         }
     } else if (right.operator === '*') {
         let another
@@ -141,8 +142,10 @@ function ConvertAllToNode(code) {
 
 function RunAssertions(assertions, node_) {
     let failure = []
+    assertions.assertions.forEach(assertion => {
+        assertion.assertions = JSON.parse(assertion.assertions)
+    })
     const nodes = new NodeWalker().walkNode(node_)
-    console.log(nodes)
     nodes.forEach(node => {
         assertions.assertions.forEach(assertion => {
             RecursiveCompare(assertion.assertion, node)
