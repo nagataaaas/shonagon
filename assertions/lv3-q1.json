@@ -6,8 +6,7 @@
     "算術理解"
   ],
   "defaultCode": "",
-  "testCase": [
-    {
+  "testCase": [ {
       "input": "(0, 0)",
       "expected": "0"
     },
@@ -17,7 +16,7 @@
     },
     {
       "input": "(1.0, 1.0)",
-      "expected": "2.0"
+      "expected": "2"
     },
     {
       "input": "(-1, 1)",
@@ -28,15 +27,12 @@
       "expected": "-1"
     }
   ],
-  "assertions": [
-    {
+  "assertions": [ {
       "message": "正しく関数が宣言されていません",
       "assertion": {
-        "all": [
-          {
-            "type": "FunctionDeclaration"
-          }
-        ]
+        "all": [ {
+          "type": "FunctionDeclaration"
+        } ]
       },
       "tags": [
         "関数定義"
@@ -45,19 +41,16 @@
     {
       "message": "関数の引数が正しく設定されていません",
       "assertion": {
-        "all": [
-          {
-            "type": "FunctionDeclaration",
-            "params": [
-              {
-                "type": "Identifier"
-              },
-              {
-                "type": "Identifier"
-              }
-            ]
-          }
-        ]
+        "all": [ {
+          "type": "FunctionDeclaration",
+          "params": [ {
+              "type": "Identifier"
+            },
+            {
+              "type": "Identifier"
+            }
+          ]
+        } ]
       },
       "tags": [
         "関数定義"
@@ -66,8 +59,7 @@
     {
       "message": "足し算が行われていません",
       "assertion": {
-        "oneOf": [
-          {
+        "oneOf": [ {
             "type": "BinaryExpression",
             "operator": "+"
           },
@@ -84,11 +76,9 @@
     {
       "message": "関数内でreturn文が使われていません",
       "assertion": {
-        "all": [
-          {
-            "type": "ReturnStatement"
-          }
-        ]
+        "all": [ {
+          "type": "ReturnStatement"
+        } ]
       },
       "tags": [
         "関数定義",
@@ -98,12 +88,10 @@
     {
       "message": "関数から値が返却されていません",
       "assertion": {
-        "none": [
-          {
-            "type": "ReturnStatement",
-            "argument": null
-          }
-        ]
+        "none": [ {
+          "type": "ReturnStatement",
+          "argument": null
+        } ]
       },
       "tags": [
         "関数定義",
