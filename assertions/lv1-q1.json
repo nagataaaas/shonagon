@@ -80,7 +80,9 @@
                   "value": 100
                 }
               }
-            ],
+            ]
+          },
+          {
             "all": [
               {
                 "type": "AssignmentExpression",
