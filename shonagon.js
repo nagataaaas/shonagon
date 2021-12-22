@@ -154,6 +154,7 @@ function RunAssertions(question, node_) {
     })
     parsedAssertions.forEach(assertion => {
         RecursiveDetermine(assertion.assertion)
+        console.log(assertion)
         if (assertion.assertion.matched === false || (!assertion.assertion.hasOwnProperty('none') && !assertion.assertion.matched)) {
             failure.push(assertion)
         }
@@ -164,20 +165,25 @@ function RunAssertions(question, node_) {
 
 function RecursiveCompare(assertion, node) {
     if (assertion.matched !== undefined) return assertion.matched
-    let [none, oneOf, all, is_container] = [false, false, false, false]
+    let [none, oneOf, all, is_container] = [false, false, false, 0]
 
     if (assertion.hasOwnProperty('none')) {
-        is_container = true
+        is_container++
         none = assertion.none.some(a => RecursiveCompare(a, node))
-    } else if (assertion.hasOwnProperty('oneOf')) {
-        is_container = true
+    }
+    if (assertion.hasOwnProperty('oneOf')) {
+        is_container++
         oneOf = assertion.oneOf.some(a => RecursiveCompare(a, node))
-    } else if (assertion.hasOwnProperty('all')) {
-        is_container = true
+    }
+    if (assertion.hasOwnProperty('all')) {
+        is_container++
         assertion.all.forEach(a => RecursiveCompare(a, node))
         all = assertion.all.every(a => a.matched)
     }
 
+    if (is_container > 1){
+        console.warn('not only 1 or none of [none, oneOf, all] is given: ' + JSON.stringify(assertion))
+    }
     if (is_container) {
         if (none) assertion.matched = false
         else if (oneOf) assertion.matched = true
