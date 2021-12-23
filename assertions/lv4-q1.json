@@ -9,19 +9,19 @@
   "testCase": [
     {
       "input": "(0)",
-      "expected": "'even'"
+      "expected": "even"
     },
     {
       "input": "(1)",
-      "expected": "'odd'"
+      "expected": "odd"
     },
     {
       "input": "(1000000000000)",
-      "expected": "'even'"
+      "expected": "even"
     },
     {
       "input": "(-1)",
-      "expected": "'odd'"
+      "expected": "odd"
     }
   ],
   "assertions": [
