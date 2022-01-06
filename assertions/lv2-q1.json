@@ -1,4 +1,5 @@
 {
+  "level": 2,
   "title": "文字列を整数にする",
   "description": "用意されたstringの変数a,bを整数に変換し、足し算を行い結果を出力せよ。",
   "tags": [
